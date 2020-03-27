@@ -23,6 +23,7 @@
         android:id="@+id/bntToRegister"
         android:layout_width="match_parent"
         android:layout_height="75dp"
+        android:onClick="handleRegisterClick"
         android:text="Register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
