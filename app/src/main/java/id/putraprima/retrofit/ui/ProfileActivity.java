@@ -14,7 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import id.putraprima.retrofit.R;
 import id.putraprima.retrofit.api.helper.ServiceGenerator;
+import id.putraprima.retrofit.api.models.ApiError;
 import id.putraprima.retrofit.api.models.Envelope;
+import id.putraprima.retrofit.api.models.ErrorUtils;
 import id.putraprima.retrofit.api.models.UserInfo;
 import id.putraprima.retrofit.api.services.ApiInterface;
 import retrofit2.Call;
@@ -59,9 +61,16 @@ public class ProfileActivity extends AppCompatActivity {
         call.enqueue(new Callback<Envelope<UserInfo>>() {
             @Override
             public void onResponse(Call<Envelope<UserInfo>> call, Response<Envelope<UserInfo>> response) {
-                mIdText.setText(Integer.toString(response.body().getData().getId()));
-                mNameText.setText(response.body().getData().getName());
-                mEmailText.setText(response.body().getData().getEmail());
+                if (response.isSuccessful()){
+                    mIdText.setText(Integer.toString(response.body().getData().getId()));
+                    mNameText.setText(response.body().getData().getName());
+                    mEmailText.setText(response.body().getData().getEmail());
+                }else{
+                    ApiError error = ErrorUtils.parseError(response);
+                   if (error.getError() != null){
+                       Toast.makeText(ProfileActivity.this, error.getError().toString(), Toast.LENGTH_SHORT).show();
+                   }
+                }
             }
 
             @Override

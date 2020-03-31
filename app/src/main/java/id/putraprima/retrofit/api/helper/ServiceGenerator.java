@@ -16,7 +16,11 @@ public class ServiceGenerator {
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create());
 
-    private static Retrofit retrofit = builder.build();
+    //private static Retrofit retrofit = builder.build();
+    private static Retrofit retrofit;
+    public static Retrofit retrofit(){
+        return retrofit;
+    }
 
     private static HttpLoggingInterceptor logging =
             new HttpLoggingInterceptor()

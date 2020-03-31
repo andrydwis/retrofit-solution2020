@@ -13,7 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import id.putraprima.retrofit.R;
 import id.putraprima.retrofit.api.helper.ServiceGenerator;
+import id.putraprima.retrofit.api.models.ApiError;
 import id.putraprima.retrofit.api.models.Envelope;
+import id.putraprima.retrofit.api.models.ErrorUtils;
 import id.putraprima.retrofit.api.models.UpdateProfileRequest;
 import id.putraprima.retrofit.api.models.UpdateProfileResponse;
 import id.putraprima.retrofit.api.services.ApiInterface;
@@ -46,12 +48,17 @@ public class UpdateProfileActivity extends AppCompatActivity {
             public void onResponse(Call<Envelope<UpdateProfileResponse>> call, Response<Envelope<UpdateProfileResponse>> response) {
                 if (response.code() == 200){
                     Toast.makeText(UpdateProfileActivity.this, "Update Profile Success", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(UpdateProfileActivity.this, "Update Profile Failed", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    setResult(1, intent);
+                    finish();
+                }else if (response.code() != 200){
+                    ApiError error = ErrorUtils.parseError(response);
+                    if (error.getError().getName() != null){
+                        Toast.makeText(UpdateProfileActivity.this, error.getError().getName().get(0), Toast.LENGTH_SHORT).show();
+                    }else if (error.getError().getEmail() != null){
+                        Toast.makeText(UpdateProfileActivity.this, error.getError().getEmail().get(0), Toast.LENGTH_SHORT).show();
+                    }
                 }
-                Intent intent = new Intent();
-                setResult(1, intent);
-                finish();
             }
 
             @Override
@@ -66,23 +73,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
         String name = mNameProfileUpdateText.getText().toString();
         String email = mEmailProfileUpdateText.getText().toString();
         updateProfileRequest = new UpdateProfileRequest(name, email);
-
-        boolean check;
-        if (name.equals("")) {
-            Toast.makeText(this, "Name is Empty!", Toast.LENGTH_SHORT).show();
-            check = false;
-        } else if(email.equals("")) {
-            Toast.makeText(this, "Email is Empty!", Toast.LENGTH_SHORT).show();
-            check = false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            Toast.makeText(this, "Email Not Valid", Toast.LENGTH_SHORT).show();
-            check = false;
-        } else {
-            check = true;
-        }
-
-        if (check == true) {
-            doUpdateProfile();
-        }
+        doUpdateProfile();
     }
 }
