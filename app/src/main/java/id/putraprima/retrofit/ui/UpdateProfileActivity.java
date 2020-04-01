@@ -46,12 +46,12 @@ public class UpdateProfileActivity extends AppCompatActivity {
         call.enqueue(new Callback<Envelope<UpdateProfileResponse>>() {
             @Override
             public void onResponse(Call<Envelope<UpdateProfileResponse>> call, Response<Envelope<UpdateProfileResponse>> response) {
-                if (response.code() == 200){
+                if (response.isSuccessful()){
                     Toast.makeText(UpdateProfileActivity.this, "Update Profile Success", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     setResult(1, intent);
                     finish();
-                }else if (response.code() != 200){
+                }else{
                     ApiError error = ErrorUtils.parseError(response);
                     if (error.getError().getName() != null){
                         Toast.makeText(UpdateProfileActivity.this, error.getError().getName().get(0), Toast.LENGTH_SHORT).show();

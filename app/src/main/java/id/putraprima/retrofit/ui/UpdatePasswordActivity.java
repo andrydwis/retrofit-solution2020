@@ -45,12 +45,12 @@ public class UpdatePasswordActivity extends AppCompatActivity {
         call.enqueue(new Callback<Envelope<UpdatePasswordResponse>>() {
             @Override
             public void onResponse(Call<Envelope<UpdatePasswordResponse>> call, Response<Envelope<UpdatePasswordResponse>> response) {
-                if (response.code() == 200){
+                if (response.isSuccessful()){
                     Toast.makeText(UpdatePasswordActivity.this, "Update Password Success", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     setResult(2, intent);
                     finish();
-                }else if (response.code() != 200){
+                }else{
                     ApiError error = ErrorUtils.parseError(response);
                     if (error.getError().getPassword() != null){
                         for (int i = 0;i < error.getError().getPassword().size();i++){

@@ -45,9 +45,9 @@ public class RegisterActivity extends AppCompatActivity {
         call.enqueue(new Callback<Envelope<RegisterResponse>>() {
             @Override
             public void onResponse(Call<Envelope<RegisterResponse>> call, Response<Envelope<RegisterResponse>> response) {
-               if (response.code() == 201){
+               if (response.isSuccessful()){
                    Toast.makeText(RegisterActivity.this, "Register Successfull", Toast.LENGTH_SHORT).show();
-               }else if (response.code() != 201){
+               }else{
                    ApiError error = ErrorUtils.parseError(response);
                    if (error.getError().getName() != null){
                        Toast.makeText(RegisterActivity.this, error.getError().getName().get(0), Toast.LENGTH_SHORT).show();

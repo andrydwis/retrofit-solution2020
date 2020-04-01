@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView mMainTxtAppName;
     private TextView mMainTxtAppVersion;
 
+    LoginRequest loginRequest;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,22 +48,20 @@ public class MainActivity extends AppCompatActivity {
         mMainTxtAppVersion.setText(preference.getString("appVersion", "default"));
     }
 
-    private void doLogin() {
+    public void doLogin(){
         ApiInterface service = ServiceGenerator.createService(ApiInterface.class);
-
-        LoginRequest loginRequest = new LoginRequest(email, password);
         Call<LoginResponse> call = service.doLogin(loginRequest);
         call.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                if(response.code() == 200){
+                if (response.isSuccessful()){
                     SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = preference.edit();
                     editor.putString("token",response.body().getToken());
                     editor.apply();
                     Intent intent = new Intent(getApplicationContext(),ProfileActivity.class);
                     startActivity(intent);
-                }else if (response.code() != 200){
+                }else{
                     ApiError error = ErrorUtils.parseError(response);
                     if (error.getError().getEmail() != null){
                         Toast.makeText(MainActivity.this, error.getError().getEmail().get(0), Toast.LENGTH_SHORT).show();
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "Gagal Koneksi", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -86,7 +86,12 @@ public class MainActivity extends AppCompatActivity {
     public void handleLoginClick(View view) {
         email = edtEmail.getText().toString();
         password = edtPassword.getText().toString();
+        loginRequest = new LoginRequest(email, password);
         doLogin();
     }
 
+    public void handleRecipe(View view) {
+        Intent intent = new Intent(this, RecipeActivity.class);
+        startActivity(intent);
+    }
 }
