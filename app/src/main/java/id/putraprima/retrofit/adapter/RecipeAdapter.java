@@ -11,16 +11,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import id.putraprima.retrofit.R;
 import id.putraprima.retrofit.api.models.Recipe;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
-    List<Recipe> items;
+    ArrayList<Recipe> items;
 
-    public RecipeAdapter(List<Recipe> items) {
+    public RecipeAdapter(ArrayList<Recipe> items) {
         this.items = items;
     }
     @NonNull
