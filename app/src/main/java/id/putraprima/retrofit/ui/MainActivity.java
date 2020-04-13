@@ -89,9 +89,4 @@ public class MainActivity extends AppCompatActivity {
         loginRequest = new LoginRequest(email, password);
         doLogin();
     }
-
-    public void handleRecipe(View view) {
-        Intent intent = new Intent(this, RecipeActivity.class);
-        startActivity(intent);
-    }
 }

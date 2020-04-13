@@ -91,4 +91,13 @@ public class ProfileActivity extends AppCompatActivity {
         startActivityForResult(intent, 2);
     }
 
+    public void handleRecipe(View view) {
+        Intent intent = new Intent(this, RecipeActivity.class);
+        startActivity(intent);
+    }
+
+    public void handleUpload(View view) {
+        Intent intent = new Intent(this, UploadActivity.class);
+        startActivity(intent);
+    }
 }
