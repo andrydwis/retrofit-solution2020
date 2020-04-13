@@ -39,7 +39,7 @@ import retrofit2.Response;
 public class UploadActivity extends AppCompatActivity {
 
     private Uri imageUri;
-    private Bitmap bitmap;
+    private Bitmap imageBitmap;
     private ImageView mRecipeImage;
 
     private String nama_resep, deskripsi, bahan, langkah_pembuatan;
@@ -86,6 +86,8 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     public void doUpload() {
+        SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
         nama_resep = mNamaResepText.getText().toString();
         deskripsi = mDeskripsiText.getText().toString();
         bahan = mBahanText.getText().toString();
@@ -97,13 +99,13 @@ public class UploadActivity extends AppCompatActivity {
         map.put("deskripsi", createPartFromString(deskripsi));
         map.put("bahan", createPartFromString(bahan));
         map.put("langkah_pembuatan", createPartFromString(langkah_pembuatan));
+        map.put("token", createPartFromString(preference.getString("token", null)));
 
-        File file = createTempFile(bitmap);
+        File file = createTempFile(imageBitmap);
         RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("foto", file.getName(), reqFile);
 
-        SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        ApiInterface service = ServiceGenerator.createService(ApiInterface.class, "Bearer " + preference.getString("token", null));
+        ApiInterface service = ServiceGenerator.createService(ApiInterface.class);
         Call<ResponseBody> call = service.doUpload(body,map);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -143,8 +145,8 @@ public class UploadActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (data != null) {
                 imageUri = data.getData();
-                bitmap = (Bitmap) data.getExtras().get("data");
-                mRecipeImage.setImageBitmap(bitmap);
+                imageBitmap = (Bitmap) data.getExtras().get("data");
+                mRecipeImage.setImageBitmap(imageBitmap);
             }
         }
     }
@@ -155,6 +157,10 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     public void handleUpload(View view) {
-        doUpload();
+        if (imageBitmap!=null){
+            doUpload();
+        }else{
+            Toast.makeText(this, "Capture image first", Toast.LENGTH_SHORT).show();
+        }
     }
 }
